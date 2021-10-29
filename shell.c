@@ -14,9 +14,9 @@
 #define TOK_DELIM "\t\r\n\a"
 
 
-	char* line;
-	char** args;
-	int status;
+char* line;
+char** args;
+int status;
 
 
 char* read_line() {
@@ -80,7 +80,7 @@ char** split_line(char* line) {
 }
 
 int execute(char** args) {
-	pid_t cpid;
+  pid_t cpid;
   int status;
   
   if (strcmp(args[0], "exit") == 0)
@@ -91,12 +91,14 @@ int execute(char** args) {
   cpid = fork();
 
   if (cpid == 0) {
-    if (execvp(args[0], args) < 0)
+    if (execvp(args[0], args) < 0){
       printf("dash: command not found: %s\n", args[0]);
       exit(EXIT_FAILURE);
-
-  } else if (cpid < 0)
+    }	    
+  }
+  else if (cpid < 0){
     printf( "Error forking");
+    }
   else {
     waitpid(cpid, & status, WUNTRACED);
   }
@@ -104,14 +106,14 @@ int execute(char** args) {
 }
 
 void inf_loop() {
-	do {
-		printf(">");
-		line=read_line();
-		args = split_line(line);
-		status = execute(args);
+  do {
+    printf(">");
+    line=read_line();
+    args = split_line(line);
+    status = execute(args);
     free(line);
     free(args);
-	}while(status);
+  }while(status);
 }
 
 int main(int argc, char* argv[]) {
